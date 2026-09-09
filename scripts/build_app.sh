@@ -2,13 +2,13 @@
 set -euo pipefail
 
 echo "===================================================="
-echo "  Building & Packaging Better Screen Shot (v1.0.0)  "
+echo "  Building & Packaging Better Screen Shot (v1.0.1)  "
 echo "===================================================="
 
 APP_NAME="Screenshot to Copy and Paste"
 DISPLAY_NAME="Better Screen Shot"
 BUNDLE_ID="And-Friends.Better-Screen-Shot"
-VERSION="1.0.0"
+VERSION="1.0.1"
 BUILD_NUMBER="1"
 
 PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"

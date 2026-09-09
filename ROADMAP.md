@@ -8,16 +8,17 @@ This roadmap governs the iterative development of **Better Screen Shot**, ensuri
 
 | Version | Status | Milestone Focus |
 | :--- | :--- | :--- |
-| **v0.1.0** | 🚧 In Progress | Core Capture Engine & Clipboard Integration |
-| **v0.2.0** | 🚧 In Progress | Menubar UI, Bullseye Window Picker & Global Hotkeys |
-| **v0.3.0** | 🚧 In Progress | First-Run Permissions Wizard, App Icon & Splash Screen |
-| **v1.0.0** | 🎯 Target | Initial Stable Release (Core Features, Signing & GitHub Publication) |
+| **v0.1.0** | ✅ Completed | Core Capture Engine & Clipboard Integration |
+| **v0.2.0** | ✅ Completed | Menubar UI, Bullseye Window Picker & Global Hotkeys |
+| **v0.3.0** | ✅ Completed | First-Run Permissions Wizard, App Icon & Splash Screen |
+| **v1.0.0** | ✅ Completed | Initial Stable Release (Core Features & Signing) |
+| **v1.0.1** | 🚀 Submitted to Mac App Store | Production App Store Release as "Screenshot to Copy and Paste" |
 | **v2.0.0** | 📋 Planned | Video Recording (Window & Screen) with System Audio |
 | **v2.1.0** | 📋 Planned | Secure Screenshot & Video Vault / Gallery |
 
 ---
 
-## Core Features (Milestones v0.1.0 – v1.0.0)
+## Core Features (Milestones v0.1.0 – v1.0.1)
 
 ### 1. Core Capture Engine & Clipboard Buffer (v0.1.0)
 - [x] High-performance display capture using modern macOS APIs (`ScreenCaptureKit` + AppKit fallbacks)
@@ -43,11 +44,12 @@ This roadmap governs the iterative development of **Better Screen Shot**, ensuri
 - [x] Custom high-resolution macOS application icon ("Better Screen Shot" camera with optical bullseye lens)
 
 ### 4. Production Packaging & Release (v1.0.0 / v1.0.1)
-- [x] Standalone macOS `.app` bundle assembly (`Better Screen Shot.app`)
-- [x] Ad-Hoc code signing (`codesign --force --deep --sign - --options runtime`)
+- [x] Standalone macOS `.app` bundle assembly (`Screenshot to Copy and Paste.app`)
+- [x] Developer ID code signing (`Developer ID Application: Gregory Class (Z2YEEZZZN6)`) with hardened runtime and sandboxing entitlements
 - [x] Drag-to-Applications `.dmg` installer creation (`BetterScreenShot-v1.0.1.dmg`)
+- [x] App Store submission validation passed ("Screenshot to Copy and Paste", Bundle ID `And-Friends.Better-Screen-Shot`)
 - [x] Comprehensive documentation in `README.md`
-- [x] Git repository tagged with releases and linked to `https://github.com/gguuss/bss`
+- [x] Git repository tagged with releases (`v1.0.0`, `v1.0.1`) and published to `https://github.com/gguuss/bss`
 
 ---
 

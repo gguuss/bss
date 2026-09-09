@@ -167,20 +167,20 @@ xcodebuild test -project BetterScreenShot.xcodeproj -scheme BetterScreenShot
 ```
 The signed application and drag-to-install disk image will be generated in:
 - `dist/Better Screen Shot.app`
-- `dist/BetterScreenShot-v1.0.0.dmg`
+- `dist/Screenshot to Copy and Paste.app`
+- `dist/BetterScreenShot-v1.0.1.dmg`
 
 ---
 
-## App Store Submission Checklist
+## App Store Submission Checklist & Status
 
-To prepare Better Screen Shot for Mac App Store publication:
-- [ ] Configure Apple Developer Team and App Store Provisioning Profile in Xcode.
-- [ ] Enable App Sandbox with `com.apple.security.device.screen-recording` entitlement.
-- [ ] Verify `Info.plist` entries:
-  - `NSScreenCaptureUsageDescription`: "Better Screen Shot needs screen recording access to capture windows and displays."
-  - `NSCameraUsageDescription`: Optional / not needed unless physical webcam is used.
-- [ ] Add App Store marketing assets (1024x1024 icon, localized screenshots, privacy policy URL).
-- [ ] Build with `xcodebuild archive` and notarize via `xcrun notarytool`.
+**Status**: 🚀 Submitted to the Mac App Store as **"Screenshot to Copy and Paste"** (Bundle ID: `And-Friends.Better-Screen-Shot`).
+
+- [x] Configure Apple Developer Team (`Z2YEEZZZN6`) and Automatic Code Signing in Xcode.
+- [x] Enable App Sandbox with entitlements (`BetterScreenShot.entitlements`).
+- [x] Verify `Info.plist` entries (`NSScreenCaptureUsageDescription`, `NSAccessibilityUsageDescription`, `LSApplicationCategoryType: public.app-category.utilities`, `LSUIElement: true`).
+- [x] App Store submission validation passed in Xcode Organizer.
+- [x] Signed with Developer ID (`Developer ID Application: Gregory Class (Z2YEEZZZN6)`) with hardened runtime.
 
 ---
 
