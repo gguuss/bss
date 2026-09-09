@@ -175,16 +175,10 @@ public struct FirstRunWizardView: View {
         .padding(22)
         .frame(width: 560, height: 500)
         .onAppear {
-            Task { @MainActor in
-                await permissions.verifyScreenRecordingAccess()
-                _ = permissions.refreshPermissions()
-            }
+            _ = permissions.refreshPermissions()
         }
         .onReceive(NotificationCenter.default.publisher(for: NSApplication.didBecomeActiveNotification)) { _ in
-            Task { @MainActor in
-                await permissions.verifyScreenRecordingAccess()
-                _ = permissions.refreshPermissions()
-            }
+            _ = permissions.refreshPermissions()
         }
     }
 }

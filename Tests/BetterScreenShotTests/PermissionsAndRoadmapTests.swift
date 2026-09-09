@@ -23,6 +23,26 @@ final class PermissionsAndRoadmapTests: XCTestCase {
         XCTAssertEqual(permissions.hasScreenRecordingPermission, screenPerm)
     }
 
+    func testPassivePermissionRefreshDoesNotTriggerModalOrLoop() {
+        let permissions = PermissionsManager.shared
+        // refreshPermissions must complete synchronously and immediately without blocking or prompting
+        let (screen, access) = permissions.refreshPermissions()
+        XCTAssertEqual(screen, permissions.checkScreenRecordingPermission())
+        XCTAssertEqual(access, permissions.checkAccessibilityPermission())
+    }
+
+    func testWizardLifecycleAvoidsActiveModalPrompting() throws {
+        let root = projectRootPath()
+        let wizardPath = (root as NSString).appendingPathComponent("Sources/BetterScreenShotCore/FirstRunWizardView.swift")
+        let content = try String(contentsOfFile: wizardPath, encoding: .utf8)
+
+        // Ensure didBecomeActiveNotification does not invoke verifyScreenRecordingAccess
+        XCTAssertFalse(content.contains("didBecomeActiveNotification)) { _ in\n            Task {\n                await permissions.verifyScreenRecordingAccess"),
+                       "didBecomeActiveNotification must not trigger verifyScreenRecordingAccess which prompts system modal on window click")
+        XCTAssertTrue(content.contains("didBecomeActiveNotification)) { _ in\n            _ = permissions.refreshPermissions()\n        }"),
+                      "didBecomeActiveNotification must use synchronous non-intrusive refreshPermissions")
+    }
+
     func testInfoPlistUsageDescriptions() throws {
         let root = projectRootPath()
         let plistPath = (root as NSString).appendingPathComponent("Sources/BetterScreenShot/Info.plist")

@@ -6,7 +6,7 @@ echo "  Building & Packaging Better Screen Shot (v1.0.0)  "
 echo "===================================================="
 
 APP_NAME="Better Screen Shot"
-BUNDLE_ID="com.gguuss.BetterScreenShot"
+BUNDLE_ID="And-Friends.Better-Screen-Shot"
 VERSION="1.0.0"
 BUILD_NUMBER="1"
 
