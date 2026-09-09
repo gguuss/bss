@@ -10,6 +10,7 @@
 		0AE4CF4D7B00EF7D1A9288FA /* HotkeyManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA764F37D21482403E1F2DB7 /* HotkeyManager.swift */; };
 		44EA72673A249614C1391213 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A75BCE95AB44A229B8AB944D /* Assets.xcassets */; };
 		4BF2CC04C4E23B552829F408 /* BetterScreenShotCore.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 7BBC5C7384F304C1F0CD8AB6 /* BetterScreenShotCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		4D414B0223C0998D2884E7F2 /* XcodeGenBlueprintTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2F299EF754CF5997408F63 /* XcodeGenBlueprintTests.swift */; };
 		50F27193D384974200E7D95D /* FirstRunWizardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18E09B3423AAE8519E541497 /* FirstRunWizardView.swift */; };
 		56309FD535B081CBBF44BAF5 /* HighlightOverlayWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66640046A769AC4ED634B28 /* HighlightOverlayWindow.swift */; };
 		5E94125F08509CBF4F756681 /* ClipboardManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC9E8E08E1CE29C47B76BA40 /* ClipboardManagerTests.swift */; };
@@ -91,6 +92,8 @@
 		BC9E8E08E1CE29C47B76BA40 /* ClipboardManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClipboardManagerTests.swift; sourceTree = "<group>"; };
 		BF3B83E68F881661165A3D2E /* CaptureEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureEngine.swift; sourceTree = "<group>"; };
 		CBA3A47DE8762CEF8C2F4A85 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		CC2F299EF754CF5997408F63 /* XcodeGenBlueprintTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XcodeGenBlueprintTests.swift; sourceTree = "<group>"; };
+		DD5D3127F0E8BB7754BA1F72 /* BetterScreenShot.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = BetterScreenShot.entitlements; sourceTree = "<group>"; };
 		EA764F37D21482403E1F2DB7 /* HotkeyManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HotkeyManager.swift; sourceTree = "<group>"; };
 		FF62FAA33846A290B6C30850 /* BetterScreenShotTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BetterScreenShotTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -184,6 +187,7 @@
 				B8F877E9FF67EFA08A442055 /* HotkeyManagerTests.swift */,
 				5AB070F7B0DF83AABFF1F012 /* PermissionsAndRoadmapTests.swift */,
 				6F1342B283AD3A3B973F41D6 /* WindowPickerTests.swift */,
+				CC2F299EF754CF5997408F63 /* XcodeGenBlueprintTests.swift */,
 			);
 			path = BetterScreenShotTests;
 			sourceTree = "<group>";
@@ -192,6 +196,7 @@
 			isa = PBXGroup;
 			children = (
 				CBA3A47DE8762CEF8C2F4A85 /* AppDelegate.swift */,
+				DD5D3127F0E8BB7754BA1F72 /* BetterScreenShot.entitlements */,
 				19BC9231298C8204852C4EE8 /* main.swift */,
 			);
 			path = BetterScreenShot;
@@ -336,6 +341,7 @@
 				D759069405D2A9D59700300D /* HotkeyManagerTests.swift in Sources */,
 				C7808822EE4C83CE764A7718 /* PermissionsAndRoadmapTests.swift in Sources */,
 				8C72D014F939B180D526B712 /* WindowPickerTests.swift in Sources */,
+				4D414B0223C0998D2884E7F2 /* XcodeGenBlueprintTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -455,6 +461,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Sources/BetterScreenShot/BetterScreenShot.entitlements;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -523,6 +530,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Sources/BetterScreenShot/BetterScreenShot.entitlements;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;

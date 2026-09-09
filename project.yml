@@ -59,6 +59,7 @@ targets:
         INFOPLIST_KEY_NSHumanReadableCopyright: "Copyright © 2026 Gus Class. All rights reserved."
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         GENERATE_INFOPLIST_FILE: YES
+        CODE_SIGN_ENTITLEMENTS: Sources/BetterScreenShot/BetterScreenShot.entitlements
         CURRENT_PROJECT_VERSION: 1
         MARKETING_VERSION: "1.0.0"
         LD_RUNPATH_SEARCH_PATHS:
