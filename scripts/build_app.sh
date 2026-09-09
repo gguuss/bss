@@ -72,6 +72,8 @@ cat <<EOF > "$CONTENTS_DIR/Info.plist"
     <true/>
     <key>NSScreenCaptureUsageDescription</key>
     <string>Better Screen Shot needs screen recording permissions to capture windows and displays to your clipboard.</string>
+    <key>NSAccessibilityUsageDescription</key>
+    <string>Better Screen Shot uses accessibility to detect window titles and monitor global hotkey shortcuts.</string>
     <key>NSHumanReadableCopyright</key>
     <string>Copyright © 2026 Gus Class. All rights reserved.</string>
 </dict>

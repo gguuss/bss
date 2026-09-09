@@ -122,6 +122,19 @@ final class CaptureRegressionTests: XCTestCase {
         XCTAssertFalse(HighlightOverlayWindow.shared.isVisible)
     }
 
+    /// Regression Test: Ensures PermissionsManager verifies Screen Recording via both preflight and ScreenCaptureKit
+    func testScreenRecordingPermissionPreflightAndVerification() async {
+        let permissions = PermissionsManager.shared
+        let preflight = permissions.checkScreenRecordingPermission()
+        
+        let verified = await permissions.verifyScreenRecordingAccess()
+        // If preflight is true, verification must also be true
+        if preflight {
+            XCTAssertTrue(verified, "verifyScreenRecordingAccess must return true when preflight is true")
+        }
+        XCTAssertEqual(permissions.hasScreenRecordingPermission, verified)
+    }
+
     /// Regression Test: Verifies that Rule 7 (Bug Regression Guardrail) is documented in SKILL.md
     func testEngineeringDisciplineSkillRule7RegressionGuardrailExists() throws {
         let skillPath = URL(fileURLWithPath: #filePath)
@@ -135,5 +148,6 @@ final class CaptureRegressionTests: XCTestCase {
         XCTAssertTrue(content.contains("Clipboard Isolation"), "SKILL.md must document Clipboard Isolation requirement")
         XCTAssertTrue(content.contains("Capture Integrity & Sandboxing"), "SKILL.md must document ScreenCaptureKit capture integrity")
         XCTAssertTrue(content.contains("Bullseye Interaction & Event Shielding"), "SKILL.md must document Bullseye Interaction & Event Shielding")
+        XCTAssertTrue(content.contains("Permissions Management & TCC Handling"), "SKILL.md must document Permissions Management & TCC Handling")
     }
 }

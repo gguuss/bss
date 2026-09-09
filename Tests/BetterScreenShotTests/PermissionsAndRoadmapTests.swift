@@ -4,7 +4,7 @@ import CoreGraphics
 
 @MainActor
 final class PermissionsAndRoadmapTests: XCTestCase {
-    func testPermissionsManagerAPI() {
+    func testPermissionsManagerAPI() async {
         let permissions = PermissionsManager.shared
         let screenPerm = permissions.checkScreenRecordingPermission()
         let accessPerm = permissions.checkAccessibilityPermission()
@@ -12,6 +12,23 @@ final class PermissionsAndRoadmapTests: XCTestCase {
         // Permissions return valid boolean flags
         XCTAssertEqual(screenPerm, permissions.checkScreenRecordingPermission())
         XCTAssertEqual(accessPerm, permissions.checkAccessibilityPermission())
+
+        // Refresh permissions returns current state
+        let refreshed = permissions.refreshPermissions()
+        XCTAssertEqual(refreshed.screen, screenPerm)
+        XCTAssertEqual(refreshed.accessibility, accessPerm)
+
+        // Async verification via ScreenCaptureKit & CGPreflight
+        _ = await permissions.verifyScreenRecordingAccess()
+        XCTAssertEqual(permissions.hasScreenRecordingPermission, screenPerm)
+    }
+
+    func testInfoPlistUsageDescriptions() throws {
+        let root = projectRootPath()
+        let plistPath = (root as NSString).appendingPathComponent("Sources/BetterScreenShot/Info.plist")
+        let content = try String(contentsOfFile: plistPath, encoding: .utf8)
+        XCTAssertTrue(content.contains("NSScreenCaptureUsageDescription"), "Info.plist must define NSScreenCaptureUsageDescription")
+        XCTAssertTrue(content.contains("NSAccessibilityUsageDescription"), "Info.plist must define NSAccessibilityUsageDescription")
     }
 
     private func projectRootPath() -> String {
@@ -69,7 +86,6 @@ final class PermissionsAndRoadmapTests: XCTestCase {
     }
 
     func testSecretsProtectionPolicyAndGitignore() throws {
-        let fileManager = FileManager.default
         let root = projectRootPath()
         let skillPath = (root as NSString).appendingPathComponent(".agents/skills/bss-engineering-discipline/SKILL.md")
         let gitignorePath = (root as NSString).appendingPathComponent(".gitignore")

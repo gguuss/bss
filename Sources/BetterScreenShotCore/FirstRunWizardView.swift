@@ -4,6 +4,7 @@ import AppKit
 public struct FirstRunWizardView: View {
     @ObservedObject var permissions = PermissionsManager.shared
     @State private var testSuccessMessage: String?
+    @State private var isTestingCapture = false
     public var onComplete: (() -> Void)?
 
     public init(onComplete: (() -> Void)? = nil) {
@@ -11,29 +12,29 @@ public struct FirstRunWizardView: View {
     }
 
     public var body: some View {
-        VStack(spacing: 20) {
+        VStack(spacing: 18) {
             // Header
             HStack(spacing: 16) {
                 Image(systemName: "camera.viewfinder")
-                    .font(.system(size: 44))
+                    .font(.system(size: 40))
                     .foregroundColor(.accentColor)
 
                 VStack(alignment: .leading, spacing: 4) {
                     Text("Welcome to Better Screen Shot")
                         .font(.title2)
                         .fontWeight(.bold)
-                    Text("Let's configure your Mac permissions so you can capture windows directly to your clipboard.")
+                    Text("Configure your Mac permissions to enable instant window and display capture.")
                         .font(.subheadline)
                         .foregroundColor(.secondary)
                 }
             }
-            .padding(.top, 10)
+            .padding(.top, 6)
 
             Divider()
 
             // Permission Items
-            VStack(spacing: 16) {
-                // Screen Recording Permission
+            VStack(spacing: 14) {
+                // 1. Screen Recording Permission
                 HStack(alignment: .top, spacing: 14) {
                     Image(systemName: permissions.hasScreenRecordingPermission ? "checkmark.circle.fill" : "exclamationmark.triangle.fill")
                         .font(.title3)
@@ -52,33 +53,42 @@ public struct FirstRunWizardView: View {
                     if permissions.hasScreenRecordingPermission {
                         Text("Granted")
                             .font(.subheadline)
+                            .fontWeight(.medium)
                             .foregroundColor(.green)
                             .padding(.horizontal, 10)
                             .padding(.vertical, 5)
-                            .background(Color.green.opacity(0.1))
+                            .background(Color.green.opacity(0.12))
                             .cornerRadius(6)
                     } else {
-                        Button("Open Settings") {
-                            permissions.requestScreenRecordingPermission()
-                            permissions.openScreenRecordingSettings()
+                        HStack(spacing: 8) {
+                            Button("Open Settings") {
+                                permissions.requestScreenRecordingPermission()
+                                permissions.openScreenRecordingSettings()
+                            }
+                            .buttonStyle(.borderedProminent)
+
+                            Button("Relaunch App") {
+                                permissions.relaunchApp()
+                            }
+                            .buttonStyle(.bordered)
+                            .help("macOS requires restarting the app after enabling Screen Recording in System Settings.")
                         }
-                        .buttonStyle(.borderedProminent)
                     }
                 }
-                .padding()
+                .padding(14)
                 .background(Color(NSColor.controlBackgroundColor))
                 .cornerRadius(10)
 
-                // Accessibility Permission
+                // 2. Accessibility Permission (Optional)
                 HStack(alignment: .top, spacing: 14) {
                     Image(systemName: permissions.hasAccessibilityPermission ? "checkmark.circle.fill" : "info.circle.fill")
                         .font(.title3)
-                        .foregroundColor(permissions.hasAccessibilityPermission ? .green : .blue)
+                        .foregroundColor(permissions.hasAccessibilityPermission ? .green : .secondary)
 
                     VStack(alignment: .leading, spacing: 3) {
-                        Text("Accessibility Permission (Recommended)")
+                        Text("Accessibility Permission (Optional)")
                             .font(.headline)
-                        Text("Allows precise cursor tracking and window detection across spaces.")
+                        Text("Enhances multi-space window inspection. Not required for basic screen capture.")
                             .font(.caption)
                             .foregroundColor(.secondary)
                     }
@@ -88,10 +98,11 @@ public struct FirstRunWizardView: View {
                     if permissions.hasAccessibilityPermission {
                         Text("Granted")
                             .font(.subheadline)
+                            .fontWeight(.medium)
                             .foregroundColor(.green)
                             .padding(.horizontal, 10)
                             .padding(.vertical, 5)
-                            .background(Color.green.opacity(0.1))
+                            .background(Color.green.opacity(0.12))
                             .cornerRadius(6)
                     } else {
                         Button("Open Settings") {
@@ -101,31 +112,40 @@ public struct FirstRunWizardView: View {
                         .buttonStyle(.bordered)
                     }
                 }
-                .padding()
+                .padding(14)
                 .background(Color(NSColor.controlBackgroundColor))
                 .cornerRadius(10)
             }
 
             // Test Capture Action
-            VStack(spacing: 8) {
+            VStack(spacing: 6) {
                 Button(action: {
+                    guard !isTestingCapture else { return }
+                    isTestingCapture = true
                     Task { @MainActor in
                         let success = await CaptureEngine.shared.captureDisplayToClipboard()
                         if success {
-                            testSuccessMessage = "Screenshot copied to clipboard! Try pressing ⌘V in any chat."
+                            testSuccessMessage = "✓ Screenshot copied to clipboard! Press ⌘V to paste."
+                            await permissions.verifyScreenRecordingAccess()
+                            _ = permissions.refreshPermissions()
                         } else {
-                            testSuccessMessage = "Capture failed. Please check permissions in System Settings."
+                            testSuccessMessage = "Capture failed. If you just toggled Settings, click 'Relaunch App' to apply."
                         }
+                        isTestingCapture = false
                     }
                 }) {
-                    Label("Test Screenshot (Copy to Clipboard)", systemImage: "camera.fill")
+                    Label(
+                        isTestingCapture ? "Capturing..." : "Test Screenshot (Copy to Clipboard)",
+                        systemImage: isTestingCapture ? "hourglass" : "camera.fill"
+                    )
                 }
                 .buttonStyle(.bordered)
+                .disabled(isTestingCapture)
 
                 if let message = testSuccessMessage {
                     Text(message)
                         .font(.caption)
-                        .foregroundColor(.accentColor)
+                        .foregroundColor(testSuccessMessage?.starts(with: "✓") == true ? .green : .orange)
                         .transition(.opacity)
                 }
             }
@@ -136,24 +156,35 @@ public struct FirstRunWizardView: View {
 
             // Footer
             HStack {
-                Button("Refresh Status") {
-                    _ = permissions.refreshPermissions()
+                Button("Refresh") {
+                    Task { @MainActor in
+                        await permissions.verifyScreenRecordingAccess()
+                        _ = permissions.refreshPermissions()
+                    }
                 }
 
                 Spacer()
 
-                Button("Get Started") {
+                Button(permissions.hasScreenRecordingPermission ? "Get Started" : "Continue to Menu Bar") {
                     UserDefaults.standard.set(true, forKey: "hasCompletedFirstRunWizard")
                     onComplete?()
                 }
                 .buttonStyle(.borderedProminent)
-                .disabled(!permissions.hasScreenRecordingPermission)
             }
         }
-        .padding(24)
-        .frame(width: 540, height: 480)
+        .padding(22)
+        .frame(width: 560, height: 500)
         .onAppear {
-            _ = permissions.refreshPermissions()
+            Task { @MainActor in
+                await permissions.verifyScreenRecordingAccess()
+                _ = permissions.refreshPermissions()
+            }
+        }
+        .onReceive(NotificationCenter.default.publisher(for: NSApplication.didBecomeActiveNotification)) { _ in
+            Task { @MainActor in
+                await permissions.verifyScreenRecordingAccess()
+                _ = permissions.refreshPermissions()
+            }
         }
     }
 }

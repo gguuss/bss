@@ -1,6 +1,7 @@
 import AppKit
 import CoreGraphics
 import ApplicationServices
+import ScreenCaptureKit
 
 @MainActor
 public final class PermissionsManager: ObservableObject, @unchecked Sendable {
@@ -13,7 +14,7 @@ public final class PermissionsManager: ObservableObject, @unchecked Sendable {
         refreshPermissions()
     }
 
-    /// Refreshes the cached state of permissions
+    /// Refreshes the cached state of permissions synchronously
     @discardableResult
     public func refreshPermissions() -> (screen: Bool, accessibility: Bool) {
         let screen = checkScreenRecordingPermission()
@@ -25,15 +26,45 @@ public final class PermissionsManager: ObservableObject, @unchecked Sendable {
         return (screen, accessibility)
     }
 
+    /// Asynchronously verifies Screen Recording access via ScreenCaptureKit as well as CGPreflight
+    @discardableResult
+    public func verifyScreenRecordingAccess() async -> Bool {
+        if CGPreflightScreenCaptureAccess() {
+            self.hasScreenRecordingPermission = true
+            return true
+        }
+
+        if #available(macOS 14.0, *) {
+            do {
+                let content = try await SCShareableContent.excludingDesktopWindows(false, onScreenWindowsOnly: true)
+                let granted = !content.displays.isEmpty
+                if granted {
+                    self.hasScreenRecordingPermission = true
+                }
+                return granted
+            } catch {
+                return false
+            }
+        }
+
+        return false
+    }
+
     /// Checks if Screen Recording permission is currently granted
     public func checkScreenRecordingPermission() -> Bool {
         return CGPreflightScreenCaptureAccess()
     }
 
-    /// Requests Screen Recording permission from macOS
+    /// Requests Screen Recording permission from macOS, triggering both CoreGraphics and ScreenCaptureKit
     @discardableResult
     public func requestScreenRecordingPermission() -> Bool {
-        return CGRequestScreenCaptureAccess()
+        let cgResult = CGRequestScreenCaptureAccess()
+        Task {
+            if #available(macOS 14.0, *) {
+                _ = try? await SCShareableContent.excludingDesktopWindows(false, onScreenWindowsOnly: true)
+            }
+        }
+        return cgResult
     }
 
     /// Checks if Accessibility permission is granted
@@ -44,22 +75,41 @@ public final class PermissionsManager: ObservableObject, @unchecked Sendable {
     /// Prompts the user for Accessibility permission with system prompt
     @discardableResult
     public func requestAccessibilityPermission() -> Bool {
-        let promptKey = "AXTrustedCheckOptionPrompt" as CFString
-        let options = [promptKey: true] as CFDictionary
+        let options = [("AXTrustedCheckOptionPrompt" as CFString): true] as CFDictionary
         return AXIsProcessTrustedWithOptions(options)
     }
 
     /// Opens System Settings directly to the Screen Recording permission pane
     public func openScreenRecordingSettings() {
         if let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_ScreenCapture") {
-            NSWorkspace.shared.open(url)
+            if !NSWorkspace.shared.open(url) {
+                if let fallback = URL(string: "x-apple.systempreferences:com.apple.preference.security") {
+                    NSWorkspace.shared.open(fallback)
+                }
+            }
         }
     }
 
     /// Opens System Settings directly to the Accessibility permission pane
     public func openAccessibilitySettings() {
         if let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility") {
-            NSWorkspace.shared.open(url)
+            if !NSWorkspace.shared.open(url) {
+                if let fallback = URL(string: "x-apple.systempreferences:com.apple.preference.security") {
+                    NSWorkspace.shared.open(fallback)
+                }
+            }
+        }
+    }
+
+    /// Relaunches the application to apply newly granted macOS permissions
+    public func relaunchApp() {
+        let bundleURL = Bundle.main.bundleURL
+        let process = Process()
+        process.executableURL = URL(fileURLWithPath: "/usr/bin/open")
+        process.arguments = ["-n", bundleURL.path]
+        try? process.run()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            NSApp.terminate(nil)
         }
     }
 
