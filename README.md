@@ -98,6 +98,29 @@ bss/
 
 ---
 
+## First Launch & macOS Gatekeeper Notice
+
+When downloading pre-compiled apps directly from GitHub instead of the Mac App Store, macOS Gatekeeper attaches a quarantine attribute and may display:
+> *"Apple could not verify 'Better Screen Shot.app' is free of malware that may harm your Mac or compromise your privacy."*
+
+This occurs because the application is ad-hoc signed rather than signed with an Apple Developer ID certificate notarized by Apple servers.
+
+### How to Open on macOS (Choose Either Method):
+
+#### Option A: Finder (Recommended for Friends)
+1. In **Finder**, locate `Better Screen Shot.app` (usually in `~/Downloads` or Applications).
+2. **Right-click** (or **Control-click**) the app icon and select **Open**.
+3. A dialog appears with an **"Open"** button — click **Open**.
+4. You only need to do this **once**. After the first open, macOS remembers your approval and the app opens normally.
+
+#### Option B: Terminal (One-line command)
+Strip the quarantine attribute by running:
+```bash
+xattr -d com.apple.quarantine "/path/to/Better Screen Shot.app"
+```
+
+---
+
 ## Building and Testing
 
 ### Prerequisites
