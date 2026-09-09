@@ -14,14 +14,24 @@ final class PermissionsAndRoadmapTests: XCTestCase {
         XCTAssertEqual(accessPerm, permissions.checkAccessibilityPermission())
     }
 
+    private func projectRootPath() -> String {
+        let testFilePath = #filePath
+        let url = URL(fileURLWithPath: testFilePath)
+        let root = url.deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent().path
+        if FileManager.default.fileExists(atPath: (root as NSString).appendingPathComponent("ROADMAP.md")) {
+            return root
+        }
+        return FileManager.default.currentDirectoryPath
+    }
+
     func testRoadmapMilestonesDocumented() throws {
         let fileManager = FileManager.default
-        let currentDir = fileManager.currentDirectoryPath
-        let roadmapPath = (currentDir as NSString).appendingPathComponent("ROADMAP.md")
+        let root = projectRootPath()
+        let roadmapPath = (root as NSString).appendingPathComponent("ROADMAP.md")
 
         guard fileManager.fileExists(atPath: roadmapPath),
               let content = try? String(contentsOfFile: roadmapPath, encoding: .utf8) else {
-            XCTFail("ROADMAP.md must exist in project root")
+            XCTFail("ROADMAP.md must exist in project root at \(roadmapPath)")
             return
         }
 
@@ -35,12 +45,12 @@ final class PermissionsAndRoadmapTests: XCTestCase {
 
     func testDocumentationIntegrity() throws {
         let fileManager = FileManager.default
-        let currentDir = fileManager.currentDirectoryPath
-        let readmePath = (currentDir as NSString).appendingPathComponent("README.md")
+        let root = projectRootPath()
+        let readmePath = (root as NSString).appendingPathComponent("README.md")
 
         guard fileManager.fileExists(atPath: readmePath),
               let content = try? String(contentsOfFile: readmePath, encoding: .utf8) else {
-            XCTFail("README.md must exist in project root")
+            XCTFail("README.md must exist in project root at \(readmePath)")
             return
         }
 
@@ -52,9 +62,9 @@ final class PermissionsAndRoadmapTests: XCTestCase {
 
     func testEngineeringDisciplineSkillExists() {
         let fileManager = FileManager.default
-        let currentDir = fileManager.currentDirectoryPath
-        let skillPath = (currentDir as NSString).appendingPathComponent(".agents/skills/bss-engineering-discipline/SKILL.md")
+        let root = projectRootPath()
+        let skillPath = (root as NSString).appendingPathComponent(".agents/skills/bss-engineering-discipline/SKILL.md")
 
-        XCTAssertTrue(fileManager.fileExists(atPath: skillPath), "Skill .agents/skills/bss-engineering-discipline/SKILL.md must exist")
+        XCTAssertTrue(fileManager.fileExists(atPath: skillPath), "Skill .agents/skills/bss-engineering-discipline/SKILL.md must exist at \(skillPath)")
     }
 }

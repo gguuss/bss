@@ -131,22 +131,43 @@ xattr -d com.apple.quarantine "/path/to/Better Screen Shot.app"
 
 ---
 
-## Building and Testing
+## Building, Testing, and Xcode Setup
 
 ### Prerequisites
 - macOS 13.0 (Ventura) or newer
 - Xcode 15.0+ or Swift 6.0+ toolchain
+- (Optional) [XcodeGen](https://github.com/yonaskolb/XcodeGen) (`brew install xcodegen`)
+
+### Xcode Project & XcodeGen Blueprint
+This project includes a declarative Xcode blueprint defined in **[`project.yml`](file:///Users/gusclass/agy2-projects/bss/project.yml)**.
+You can regenerate the Xcode project anytime:
+```bash
+./scripts/generate_project.sh
+# or directly:
+xcodegen generate
+```
+Then open the native project in Xcode:
+```bash
+open BetterScreenShot.xcodeproj
+```
 
 ### Run Automated Tests
+Via Swift Package Manager:
 ```bash
 swift test
 ```
+Or via Xcodebuild:
+```bash
+xcodebuild test -project BetterScreenShot.xcodeproj -scheme BetterScreenShot
+```
 
-### Build and Package `.app` Bundle
+### Build and Package `.app` & `.dmg` Installer
 ```bash
 ./scripts/build_app.sh
 ```
-The signed application will be generated in `dist/Better Screen Shot.app`.
+The signed application and drag-to-install disk image will be generated in:
+- `dist/Better Screen Shot.app`
+- `dist/BetterScreenShot-v1.0.0.dmg`
 
 ---
 

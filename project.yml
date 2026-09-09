@@ -1,0 +1,104 @@
+name: BetterScreenShot
+options:
+  bundleIdPrefix: com.gguuss
+  deploymentTarget:
+    macOS: "13.0"
+  xcodeVersion: "15.0"
+  createIntermediateGroups: true
+  groupSortPosition: top
+
+settings:
+  base:
+    MACOSX_DEPLOYMENT_TARGET: "13.0"
+    SWIFT_VERSION: "6.0"
+    CODE_SIGN_STYLE: Automatic
+    CODE_SIGN_IDENTITY: "-"
+    ENABLE_HARDENED_RUNTIME: YES
+    SWIFT_STRICT_CONCURRENCY: complete
+
+targets:
+  BetterScreenShotCore:
+    type: framework
+    platform: macOS
+    deploymentTarget: "13.0"
+    sources:
+      - path: Sources/BetterScreenShotCore
+    settings:
+      base:
+        PRODUCT_NAME: BetterScreenShotCore
+        PRODUCT_BUNDLE_IDENTIFIER: com.gguuss.BetterScreenShotCore
+        DEFINES_MODULE: YES
+        SKIP_INSTALL: YES
+        DYLIB_COMPATIBILITY_VERSION: 1
+        DYLIB_CURRENT_VERSION: 1
+        CURRENT_PROJECT_VERSION: 1
+        MARKETING_VERSION: "1.0.0"
+        GENERATE_INFOPLIST_FILE: YES
+        LD_RUNPATH_SEARCH_PATHS:
+          - $(inherited)
+          - "@executable_path/../Frameworks"
+          - "@loader_path/Frameworks"
+
+  BetterScreenShot:
+    type: application
+    platform: macOS
+    deploymentTarget: "13.0"
+    sources:
+      - path: Sources/BetterScreenShot
+      - path: Assets/Assets.xcassets
+    dependencies:
+      - target: BetterScreenShotCore
+        embed: true
+    settings:
+      base:
+        PRODUCT_NAME: "Better Screen Shot"
+        PRODUCT_BUNDLE_IDENTIFIER: com.gguuss.BetterScreenShot
+        INFOPLIST_KEY_CFBundleDisplayName: "Better Screen Shot"
+        INFOPLIST_KEY_LSUIElement: YES
+        INFOPLIST_KEY_NSScreenCaptureUsageDescription: "Better Screen Shot needs screen recording permissions to capture windows and displays to your clipboard."
+        INFOPLIST_KEY_NSHumanReadableCopyright: "Copyright © 2026 Gus Class. All rights reserved."
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        GENERATE_INFOPLIST_FILE: YES
+        CURRENT_PROJECT_VERSION: 1
+        MARKETING_VERSION: "1.0.0"
+        LD_RUNPATH_SEARCH_PATHS:
+          - $(inherited)
+          - "@executable_path/../Frameworks"
+
+  BetterScreenShotTests:
+    type: bundle.unit-test
+    platform: macOS
+    deploymentTarget: "13.0"
+    sources:
+      - path: Tests/BetterScreenShotTests
+    dependencies:
+      - target: BetterScreenShotCore
+    settings:
+      base:
+        PRODUCT_NAME: BetterScreenShotTests
+        PRODUCT_BUNDLE_IDENTIFIER: com.gguuss.BetterScreenShotTests
+        GENERATE_INFOPLIST_FILE: YES
+        LD_RUNPATH_SEARCH_PATHS:
+          - $(inherited)
+          - "@executable_path/../Frameworks"
+          - "@loader_path/../Frameworks"
+
+schemes:
+  BetterScreenShot:
+    build:
+      targets:
+        BetterScreenShot: all
+        BetterScreenShotCore: all
+        BetterScreenShotTests: [test]
+    run:
+      config: Debug
+    test:
+      config: Debug
+      targets:
+        - BetterScreenShotTests
+    profile:
+      config: Release
+    analyze:
+      config: Debug
+    archive:
+      config: Release
