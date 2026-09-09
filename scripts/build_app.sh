@@ -80,13 +80,33 @@ cat <<EOF > "$CONTENTS_DIR/Info.plist"
 </plist>
 EOF
 
-# 6. Ad-Hoc Code Signing
-echo "==> Signing application bundle (Ad-Hoc with hardened runtime)..."
-codesign --force --deep --sign - --options runtime "$APP_BUNDLE"
+# 6. Code Signing
+echo "==> Detecting signing identity..."
+SIGNING_IDENTITY=""
+if security find-identity -v -p codesigning 2>/dev/null | grep -q "Developer ID Application: .* (Z2YEEZZZN6)"; then
+    SIGNING_IDENTITY="Developer ID Application: Gregory Class (Z2YEEZZZN6)"
+elif security find-identity -v -p codesigning 2>/dev/null | grep -q "Apple Development:"; then
+    SIGNING_IDENTITY="$(security find-identity -v -p codesigning | grep "Apple Development:" | head -n 1 | sed -E 's/.*"([^"]+)".*/\1/')"
+fi
+
+ENTITLEMENTS_FILE="$PROJECT_ROOT/Sources/BetterScreenShot/BetterScreenShot.entitlements"
+ENTITLEMENTS_ARG=""
+if [ -f "$ENTITLEMENTS_FILE" ]; then
+    ENTITLEMENTS_ARG="--entitlements $ENTITLEMENTS_FILE"
+fi
+
+if [ -n "$SIGNING_IDENTITY" ]; then
+    echo "==> Signing application bundle with developer identity: $SIGNING_IDENTITY..."
+    codesign --force --deep --sign "$SIGNING_IDENTITY" --options runtime $ENTITLEMENTS_ARG "$APP_BUNDLE"
+else
+    echo "==> Signing application bundle (Ad-Hoc fallback with runtime)..."
+    codesign --force --deep --sign - --options runtime $ENTITLEMENTS_ARG "$APP_BUNDLE"
+fi
 
 # 7. Verification
-echo "==> Verifying signature..."
+echo "==> Verifying signature and designated requirement..."
 codesign --verify --deep --strict "$APP_BUNDLE"
+codesign -d -r- "$APP_BUNDLE"
 echo "Signature verification passed!"
 
 # 8. Create ZIP archive for distribution

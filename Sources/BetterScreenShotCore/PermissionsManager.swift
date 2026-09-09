@@ -104,12 +104,22 @@ public final class PermissionsManager: ObservableObject, @unchecked Sendable {
     /// Relaunches the application to apply newly granted macOS permissions
     public func relaunchApp() {
         let bundleURL = Bundle.main.bundleURL
-        let process = Process()
-        process.executableURL = URL(fileURLWithPath: "/usr/bin/open")
-        process.arguments = ["-n", bundleURL.path]
-        try? process.run()
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-            NSApp.terminate(nil)
+        let configuration = NSWorkspace.OpenConfiguration()
+        configuration.createsNewApplicationInstance = true
+        NSWorkspace.shared.openApplication(at: bundleURL, configuration: configuration) { _, error in
+            DispatchQueue.main.async {
+                if error == nil {
+                    NSApp.terminate(nil)
+                } else {
+                    let process = Process()
+                    process.executableURL = URL(fileURLWithPath: "/usr/bin/open")
+                    process.arguments = ["-n", bundleURL.path]
+                    try? process.run()
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                        NSApp.terminate(nil)
+                    }
+                }
+            }
         }
     }
 
