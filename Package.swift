@@ -26,7 +26,8 @@ let package = Package(
         .executableTarget(
             name: "BetterScreenShot",
             dependencies: ["BetterScreenShotCore"],
-            path: "Sources/BetterScreenShot"
+            path: "Sources/BetterScreenShot",
+            exclude: ["Info.plist", "BetterScreenShot.entitlements"]
         ),
         .testTarget(
             name: "BetterScreenShotTests",

@@ -94,6 +94,7 @@
 		CBA3A47DE8762CEF8C2F4A85 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		CC2F299EF754CF5997408F63 /* XcodeGenBlueprintTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XcodeGenBlueprintTests.swift; sourceTree = "<group>"; };
 		DD5D3127F0E8BB7754BA1F72 /* BetterScreenShot.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = BetterScreenShot.entitlements; sourceTree = "<group>"; };
+		E372737145BA0091B7A0536E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		EA764F37D21482403E1F2DB7 /* HotkeyManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HotkeyManager.swift; sourceTree = "<group>"; };
 		FF62FAA33846A290B6C30850 /* BetterScreenShotTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BetterScreenShotTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -197,6 +198,7 @@
 			children = (
 				CBA3A47DE8762CEF8C2F4A85 /* AppDelegate.swift */,
 				DD5D3127F0E8BB7754BA1F72 /* BetterScreenShot.entitlements */,
+				E372737145BA0091B7A0536E /* Info.plist */,
 				19BC9231298C8204852C4EE8 /* main.swift */,
 			);
 			path = BetterScreenShot;
@@ -464,11 +466,8 @@
 				CODE_SIGN_ENTITLEMENTS = Sources/BetterScreenShot/BetterScreenShot.entitlements;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = "Better Screen Shot";
-				INFOPLIST_KEY_LSUIElement = YES;
-				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2026 Gus Class. All rights reserved.";
-				INFOPLIST_KEY_NSScreenCaptureUsageDescription = "Better Screen Shot needs screen recording permissions to capture windows and displays to your clipboard.";
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = Sources/BetterScreenShot/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
@@ -533,11 +532,8 @@
 				CODE_SIGN_ENTITLEMENTS = Sources/BetterScreenShot/BetterScreenShot.entitlements;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = "Better Screen Shot";
-				INFOPLIST_KEY_LSUIElement = YES;
-				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2026 Gus Class. All rights reserved.";
-				INFOPLIST_KEY_NSScreenCaptureUsageDescription = "Better Screen Shot needs screen recording permissions to capture windows and displays to your clipboard.";
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = Sources/BetterScreenShot/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",

@@ -25,8 +25,18 @@ final class XcodeGenBlueprintTests: XCTestCase {
         XCTAssertTrue(content.contains("BetterScreenShot"), "Blueprint must define BetterScreenShot target")
         XCTAssertTrue(content.contains("BetterScreenShotCore"), "Blueprint must define BetterScreenShotCore framework")
         XCTAssertTrue(content.contains("BetterScreenShotTests"), "Blueprint must define BetterScreenShotTests target")
-        XCTAssertTrue(content.contains("LSUIElement"), "Blueprint must configure LSUIElement for menubar app")
-        XCTAssertTrue(content.contains("ScreenCaptureKit") || content.contains("deploymentTarget"), "Blueprint must configure deployment target")
+        XCTAssertTrue(content.contains("INFOPLIST_FILE"), "Blueprint must specify INFOPLIST_FILE")
+
+        let infoPlistPath = (root as NSString).appendingPathComponent("Sources/BetterScreenShot/Info.plist")
+        guard FileManager.default.fileExists(atPath: infoPlistPath),
+              let plistContent = try? String(contentsOfFile: infoPlistPath, encoding: .utf8) else {
+            XCTFail("Info.plist must exist at \(infoPlistPath)")
+            return
+        }
+
+        XCTAssertTrue(plistContent.contains("LSApplicationCategoryType"), "Info.plist must contain LSApplicationCategoryType")
+        XCTAssertTrue(plistContent.contains("public.app-category.utilities"), "Category must be public.app-category.utilities")
+        XCTAssertTrue(plistContent.contains("LSUIElement"), "Info.plist must contain LSUIElement")
     }
 
     func testXcodeProjectExists() {

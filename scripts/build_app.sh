@@ -66,6 +66,8 @@ cat <<EOF > "$CONTENTS_DIR/Info.plist"
     <string>13.0</string>
     <key>LSUIElement</key>
     <true/>
+    <key>LSApplicationCategoryType</key>
+    <string>public.app-category.utilities</string>
     <key>NSHighResolutionCapable</key>
     <true/>
     <key>NSScreenCaptureUsageDescription</key>
