@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		04A73D8BAC43066708EC43F2 /* BullseyeTrackingOverlayWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = B24126ACE123DE9AB340FDBE /* BullseyeTrackingOverlayWindow.swift */; };
 		0AE4CF4D7B00EF7D1A9288FA /* HotkeyManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA764F37D21482403E1F2DB7 /* HotkeyManager.swift */; };
 		44EA72673A249614C1391213 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A75BCE95AB44A229B8AB944D /* Assets.xcassets */; };
 		4BF2CC04C4E23B552829F408 /* BetterScreenShotCore.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 7BBC5C7384F304C1F0CD8AB6 /* BetterScreenShotCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -87,6 +88,7 @@
 		7F7F0982DDE7486E6B671D68 /* WindowPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowPicker.swift; sourceTree = "<group>"; };
 		A75BCE95AB44A229B8AB944D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B1D27008B7ED0BCD934BA758 /* StatusBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusBarController.swift; sourceTree = "<group>"; };
+		B24126ACE123DE9AB340FDBE /* BullseyeTrackingOverlayWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BullseyeTrackingOverlayWindow.swift; sourceTree = "<group>"; };
 		B2E1D9962B08CE52920C708A /* BullseyeControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BullseyeControl.swift; sourceTree = "<group>"; };
 		B66640046A769AC4ED634B28 /* HighlightOverlayWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HighlightOverlayWindow.swift; sourceTree = "<group>"; };
 		B8F877E9FF67EFA08A442055 /* HotkeyManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HotkeyManagerTests.swift; sourceTree = "<group>"; };
@@ -142,6 +144,7 @@
 			isa = PBXGroup;
 			children = (
 				B2E1D9962B08CE52920C708A /* BullseyeControl.swift */,
+				B24126ACE123DE9AB340FDBE /* BullseyeTrackingOverlayWindow.swift */,
 				BF3B83E68F881661165A3D2E /* CaptureEngine.swift */,
 				465CDE4E3199144892D13B31 /* ClipboardManager.swift */,
 				18E09B3423AAE8519E541497 /* FirstRunWizardView.swift */,
@@ -329,6 +332,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				BA4D9A5831431D2871FB0E6C /* BullseyeControl.swift in Sources */,
+				04A73D8BAC43066708EC43F2 /* BullseyeTrackingOverlayWindow.swift in Sources */,
 				6C11002FFFE212BA4405D6A4 /* CaptureEngine.swift in Sources */,
 				E1AB9DC1BE90B3C6882FBC0B /* ClipboardManager.swift in Sources */,
 				50F27193D384974200E7D95D /* FirstRunWizardView.swift in Sources */,

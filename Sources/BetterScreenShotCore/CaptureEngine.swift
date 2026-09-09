@@ -60,12 +60,20 @@ public final class CaptureEngine: @unchecked Sendable {
     public func captureWindow(windowID: CGWindowID) async -> CGImage? {
         if #available(macOS 14.0, *) {
             do {
-                let content = try await SCShareableContent.excludingDesktopWindows(true, onScreenWindowsOnly: true)
-                if let scWindow = content.windows.first(where: { $0.windowID == windowID }) {
+                var content = try await SCShareableContent.excludingDesktopWindows(true, onScreenWindowsOnly: true)
+                var targetWindow = content.windows.first(where: { $0.windowID == windowID })
+
+                if targetWindow == nil {
+                    content = try await SCShareableContent.excludingDesktopWindows(false, onScreenWindowsOnly: true)
+                    targetWindow = content.windows.first(where: { $0.windowID == windowID })
+                }
+
+                if let scWindow = targetWindow {
                     let filter = SCContentFilter(desktopIndependentWindow: scWindow)
                     let config = SCStreamConfiguration()
-                    config.width = max(Int(scWindow.frame.width * 2), 2)
-                    config.height = max(Int(scWindow.frame.height * 2), 2)
+                    let scale = NSScreen.main?.backingScaleFactor ?? 2.0
+                    config.width = max(Int(scWindow.frame.width * scale), 2)
+                    config.height = max(Int(scWindow.frame.height * scale), 2)
                     config.showsCursor = false
                     return try await SCScreenshotManager.captureImage(contentFilter: filter, configuration: config)
                 }

@@ -21,13 +21,10 @@ public struct DetectedWindow: Equatable, Sendable {
 public final class WindowPicker: @unchecked Sendable {
     public static let shared = WindowPicker()
 
-    private var isPicking = false
-    private var trackingTimer: Timer?
-    private var globalMouseUpMonitor: Any?
-    private var localMouseUpMonitor: Any?
-    private var keyMonitor: Any?
-    private var currentHighlightedWindow: DetectedWindow?
+    public private(set) var isPicking = false
+    public private(set) var currentHighlightedWindow: DetectedWindow?
     private var completionHandler: ((CGImage?) -> Void)?
+    private var cachedWindows: [DetectedWindow] = []
 
     public init() {}
 
@@ -48,7 +45,7 @@ public final class WindowPicker: @unchecked Sendable {
                 continue
             }
 
-            guard let windowID = info[kCGWindowNumber as String] as? CGWindowID else {
+            guard let windowID = (info[kCGWindowNumber as String] as? NSNumber)?.uint32Value ?? (info[kCGWindowNumber as String] as? CGWindowID) else {
                 continue
             }
 
@@ -83,60 +80,54 @@ public final class WindowPicker: @unchecked Sendable {
 
     /// Finds the topmost visible window containing the specified point in screen coordinates (Quartz / top-left origin)
     public func findWindow(at quartzPoint: CGPoint, excludingPID: pid_t = ProcessInfo.processInfo.processIdentifier) -> DetectedWindow? {
-        let windows = getVisibleWindows(excludingPID: excludingPID)
+        let windows = cachedWindows.isEmpty ? getVisibleWindows(excludingPID: excludingPID) : cachedWindows
         return windows.first { $0.bounds.contains(quartzPoint) }
     }
 
     // MARK: - Interactive Bullseye Tracking
 
     /// Starts interactive bullseye tracking.
-    /// Can be initiated via drag from menubar or triggered via global hotkey.
-    public func startBullseyeSession(completion: @escaping (CGImage?) -> Void) {
+    /// Can be initiated via drag from menubar, click from menubar, or triggered via global hotkey.
+    public func startBullseyeSession(
+        initialPoint: CGPoint? = nil,
+        isDrag: Bool = false,
+        completion: @escaping (CGImage?) -> Void
+    ) {
         guard !isPicking else { return }
         isPicking = true
         completionHandler = completion
 
-        // Change cursor to crosshair/bullseye
-        NSCursor.crosshair.push()
+        // Refresh cached visible windows for the session
+        cachedWindows = getVisibleWindows()
 
-        // Track cursor position periodically at 60Hz
-        trackingTimer = Timer.scheduledTimer(withTimeInterval: 1.0 / 60.0, repeats: true) { [weak self] _ in
-            MainActor.assumeIsolated {
-                self?.updateCursorHighlight()
-            }
+        let overlay = BullseyeTrackingOverlayWindow.shared
+        overlay.onMouseMoved = { [weak self] quartzPoint in
+            self?.handleMouseMoved(at: quartzPoint)
+        }
+        overlay.onWindowSelected = { [weak self] quartzPoint in
+            self?.handleWindowSelected(at: quartzPoint)
+        }
+        overlay.onDragReleased = { [weak self] quartzPoint, isDragging in
+            self?.handleDragReleased(at: quartzPoint, isDragging: isDragging)
+        }
+        overlay.onCancel = { [weak self] in
+            self?.cancelBullseyeSession()
         }
 
-        // Listen for mouse up (drag release or click)
-        globalMouseUpMonitor = NSEvent.addGlobalMonitorForEvents(matching: [.leftMouseUp]) { [weak self] _ in
-            Task { @MainActor in
-                self?.finishBullseyeSession()
-            }
-        }
+        overlay.show(initialPoint: initialPoint, isDrag: isDrag)
 
-        localMouseUpMonitor = NSEvent.addLocalMonitorForEvents(matching: [.leftMouseUp]) { [weak self] event in
-            Task { @MainActor in
-                self?.finishBullseyeSession()
-            }
-            return event
-        }
-
-        // Listen for Escape key to cancel
-        keyMonitor = NSEvent.addLocalMonitorForEvents(matching: [.keyDown]) { [weak self] event in
-            if event.keyCode == 53 { // 53 is Escape
-                Task { @MainActor in
-                    self?.cancelBullseyeSession()
-                }
-                return nil
-            }
-            return event
-        }
+        // Immediately highlight window under initial cursor position if available
+        let initialQuartz = quartzPointFromMouseLocation()
+        handleMouseMoved(at: initialQuartz)
     }
 
-    private func updateCursorHighlight() {
-        guard isPicking else { return }
+    /// Overload for backwards compatibility
+    public func startBullseyeSession(completion: @escaping (CGImage?) -> Void) {
+        startBullseyeSession(initialPoint: nil, isDrag: false, completion: completion)
+    }
 
-        // Quartz coordinates (0,0 is top-left of primary screen)
-        let quartzPoint = CGEvent(source: nil)?.location ?? CGPoint.zero
+    public func handleMouseMoved(at quartzPoint: CGPoint) {
+        guard isPicking else { return }
 
         if let window = findWindow(at: quartzPoint) {
             if currentHighlightedWindow != window {
@@ -150,29 +141,53 @@ public final class WindowPicker: @unchecked Sendable {
         }
     }
 
-    /// Concludes the session, captures the target window, and copies it to clipboard
-    public func finishBullseyeSession() {
+    public func handleWindowSelected(at quartzPoint: CGPoint) {
         guard isPicking else { return }
-        HighlightOverlayWindow.shared.dismiss()
-        let targetWindow = currentHighlightedWindow
+        let target = currentHighlightedWindow ?? findWindow(at: quartzPoint)
+        if let target = target {
+            finishWithWindow(target)
+        } else {
+            cancelBullseyeSession()
+        }
+    }
+
+    public func handleDragReleased(at quartzPoint: CGPoint, isDragging: Bool) {
+        guard isPicking else { return }
+        if isDragging {
+            let target = currentHighlightedWindow ?? findWindow(at: quartzPoint)
+            if let target = target {
+                finishWithWindow(target)
+                return
+            }
+        }
+        // If not a significant drag, user stays in interactive click mode
+    }
+
+    /// Captures the specified window, dismisses overlays, copies to clipboard, and notifies completion
+    public func finishWithWindow(_ window: DetectedWindow) {
+        guard isPicking else { return }
         tearDownTracking()
 
-        guard let selectedWindow = targetWindow else {
-            completionHandler?(nil)
-            completionHandler = nil
-            return
-        }
-
-        // Delay to allow macOS window server to completely remove the highlight overlay from the frame buffer
+        // Delay allows the macOS window server to completely remove the highlight overlay from the frame buffer
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.12) { [weak self] in
             Task { @MainActor in
-                let image = await CaptureEngine.shared.captureWindow(windowID: selectedWindow.windowID)
+                let image = await CaptureEngine.shared.captureWindow(windowID: window.windowID)
                 if let image = image {
                     ClipboardManager.shared.copyToClipboard(cgImage: image)
                 }
                 self?.completionHandler?(image)
                 self?.completionHandler = nil
             }
+        }
+    }
+
+    /// Concludes the session with the currently highlighted window if available
+    public func finishBullseyeSession() {
+        guard isPicking else { return }
+        if let target = currentHighlightedWindow {
+            finishWithWindow(target)
+        } else {
+            cancelBullseyeSession()
         }
     }
 
@@ -186,24 +201,15 @@ public final class WindowPicker: @unchecked Sendable {
 
     private func tearDownTracking() {
         isPicking = false
-        trackingTimer?.invalidate()
-        trackingTimer = nil
-
-        if let gMonitor = globalMouseUpMonitor {
-            NSEvent.removeMonitor(gMonitor)
-            globalMouseUpMonitor = nil
-        }
-        if let lMonitor = localMouseUpMonitor {
-            NSEvent.removeMonitor(lMonitor)
-            localMouseUpMonitor = nil
-        }
-        if let kMonitor = keyMonitor {
-            NSEvent.removeMonitor(kMonitor)
-            keyMonitor = nil
-        }
-
-        NSCursor.pop()
+        BullseyeTrackingOverlayWindow.shared.dismiss()
         HighlightOverlayWindow.shared.dismiss()
         currentHighlightedWindow = nil
+        cachedWindows = []
+    }
+
+    private func quartzPointFromMouseLocation() -> CGPoint {
+        let appKitPoint = NSEvent.mouseLocation
+        let primaryHeight = NSScreen.screens.first?.frame.height ?? 1080
+        return CGPoint(x: appKitPoint.x, y: primaryHeight - appKitPoint.y)
     }
 }

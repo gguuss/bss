@@ -62,6 +62,66 @@ final class CaptureRegressionTests: XCTestCase {
         _ = await engine.captureMainDisplay()
     }
 
+    /// Regression Test: Ensures BullseyeTrackingOverlayWindow presents and dismisses cleanly
+    func testBullseyeTrackingOverlayPresentationAndDismissal() {
+        let overlay = BullseyeTrackingOverlayWindow.shared
+        overlay.show(initialPoint: CGPoint(x: 100, y: 100), isDrag: false)
+        XCTAssertTrue(overlay.isVisible, "Tracking overlay should be visible after show")
+
+        overlay.dismiss()
+        XCTAssertFalse(overlay.isVisible, "Tracking overlay must be non-visible after dismiss")
+    }
+
+    /// Regression Test: Ensures initial mouseUp from clicking menu item does not prematurely terminate Bullseye session
+    func testBullseyeInitialMenuClickMouseUpDoesNotAbortSession() {
+        let picker = WindowPicker.shared
+        let clickPoint = CGPoint(x: 1200, y: 20)
+
+        picker.startBullseyeSession(initialPoint: clickPoint, isDrag: false) { _ in }
+        XCTAssertTrue(picker.isPicking, "WindowPicker must be actively picking after start")
+        XCTAssertTrue(BullseyeTrackingOverlayWindow.shared.isVisible, "Tracking overlay must be visible")
+
+        // Simulating release of the initial menu item click
+        picker.handleDragReleased(at: clickPoint, isDragging: false)
+        XCTAssertTrue(picker.isPicking, "Session must NOT abort on mouseUp if drag distance was minimal (click mode)")
+
+        picker.cancelBullseyeSession()
+        XCTAssertFalse(picker.isPicking, "Session must be inactive after cancel")
+        XCTAssertFalse(BullseyeTrackingOverlayWindow.shared.isVisible, "Tracking overlay must be hidden after cancel")
+    }
+
+    /// Regression Test: Ensures selecting a window immediately dismisses all overlays and resets picker state
+    func testBullseyeWindowSelectionDismissesOverlays() {
+        let picker = WindowPicker.shared
+        picker.startBullseyeSession { _ in }
+        XCTAssertTrue(picker.isPicking)
+
+        let mockWindow = DetectedWindow(
+            windowID: 88888,
+            ownerName: "TestApp",
+            title: "TestWindow",
+            bounds: CGRect(x: 100, y: 100, width: 400, height: 300),
+            layer: 0
+        )
+
+        picker.finishWithWindow(mockWindow)
+        XCTAssertFalse(picker.isPicking, "isPicking must be reset to false immediately on selection")
+        XCTAssertFalse(BullseyeTrackingOverlayWindow.shared.isVisible, "Tracking overlay must be dismissed immediately")
+        XCTAssertFalse(HighlightOverlayWindow.shared.isVisible, "Highlight overlay must be dismissed immediately")
+    }
+
+    /// Regression Test: Ensures Escape key cancels Bullseye session cleanly
+    func testBullseyeCancelOnEscape() {
+        let picker = WindowPicker.shared
+        picker.startBullseyeSession { _ in }
+        XCTAssertTrue(picker.isPicking)
+
+        picker.cancelBullseyeSession()
+        XCTAssertFalse(picker.isPicking, "isPicking must be false after cancel")
+        XCTAssertFalse(BullseyeTrackingOverlayWindow.shared.isVisible)
+        XCTAssertFalse(HighlightOverlayWindow.shared.isVisible)
+    }
+
     /// Regression Test: Verifies that Rule 7 (Bug Regression Guardrail) is documented in SKILL.md
     func testEngineeringDisciplineSkillRule7RegressionGuardrailExists() throws {
         let skillPath = URL(fileURLWithPath: #filePath)
@@ -74,5 +134,6 @@ final class CaptureRegressionTests: XCTestCase {
         XCTAssertTrue(content.contains("### 7. Bug Regression Guardrail"), "SKILL.md must define Rule 7: Bug Regression Guardrail")
         XCTAssertTrue(content.contains("Clipboard Isolation"), "SKILL.md must document Clipboard Isolation requirement")
         XCTAssertTrue(content.contains("Capture Integrity & Sandboxing"), "SKILL.md must document ScreenCaptureKit capture integrity")
+        XCTAssertTrue(content.contains("Bullseye Interaction & Event Shielding"), "SKILL.md must document Bullseye Interaction & Event Shielding")
     }
 }

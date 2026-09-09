@@ -1,7 +1,7 @@
 import AppKit
 
 public final class BullseyeMenuItemView: NSView {
-    public var onSelect: (() -> Void)?
+    public var onSelect: ((CGPoint) -> Void)?
 
     private let titleLabel = NSTextField(labelWithString: "Bullseye Window Capture")
     private let hintLabel = NSTextField(labelWithString: "Drag onto window or click")
@@ -87,10 +87,11 @@ public final class BullseyeMenuItemView: NSView {
 
     // Support click or drag directly from the menu item
     public override func mouseDown(with event: NSEvent) {
+        let clickPoint = NSEvent.mouseLocation
         // Dismiss the menu and start the bullseye session immediately
         if let menu = enclosingMenuItem?.menu {
             menu.cancelTracking()
         }
-        onSelect?()
+        onSelect?(clickPoint)
     }
 }

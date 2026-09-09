@@ -46,10 +46,12 @@ public final class StatusBarController: NSObject, NSMenuDelegate, @unchecked Sen
         menu.addItem(NSMenuItem.separator())
 
         // 1. Bullseye Window Item (Custom View with Drag / Click Support)
-        let bullseyeItem = NSMenuItem()
+        let bullseyeItem = NSMenuItem(title: "Bullseye Window Capture", action: #selector(startBullseyeWindowCapture), keyEquivalent: "2")
+        bullseyeItem.keyEquivalentModifierMask = [.command, .shift]
+        bullseyeItem.target = self
         let bullseyeView = BullseyeMenuItemView()
-        bullseyeView.onSelect = { [weak self] in
-            self?.startBullseyeWindowCapture()
+        bullseyeView.onSelect = { [weak self] point in
+            self?.startBullseyeWindowCapture(initialPoint: point, isDrag: true)
         }
         bullseyeItem.view = bullseyeView
         menu.addItem(bullseyeItem)
@@ -108,7 +110,11 @@ public final class StatusBarController: NSObject, NSMenuDelegate, @unchecked Sen
     // MARK: - Actions
 
     @objc public func startBullseyeWindowCapture() {
-        WindowPicker.shared.startBullseyeSession { image in
+        startBullseyeWindowCapture(initialPoint: nil, isDrag: false)
+    }
+
+    public func startBullseyeWindowCapture(initialPoint: CGPoint? = nil, isDrag: Bool = false) {
+        WindowPicker.shared.startBullseyeSession(initialPoint: initialPoint, isDrag: isDrag) { image in
             if image != nil {
                 // Screenshot taken & copied to clipboard
             }
