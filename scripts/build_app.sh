@@ -5,7 +5,7 @@ echo "===================================================="
 echo "  Building & Packaging Better Screen Shot (v1.0.0)  "
 echo "===================================================="
 
-APP_NAME="Better Screen Shot - PASTE capture"
+APP_NAME="Screenshot to Copy and Paste"
 DISPLAY_NAME="Better Screen Shot"
 BUNDLE_ID="And-Friends.Better-Screen-Shot"
 VERSION="1.0.0"
