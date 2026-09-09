@@ -5,3 +5,18 @@ xcuserdata/
 *.xcuserstate
 .swiftpm
 DerivedData
+
+# Secrets, Keys, and Sensitive Files
+*.env*
+*.key
+*.pem
+*.p12
+*.p8
+*.cer
+*.crt
+*.mobileprovision
+*.provisionprofile
+*credentials*.json
+*secret*
+*.token
+AuthKey_*.p8

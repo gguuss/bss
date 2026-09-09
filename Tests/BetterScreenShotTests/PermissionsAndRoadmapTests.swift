@@ -67,4 +67,23 @@ final class PermissionsAndRoadmapTests: XCTestCase {
 
         XCTAssertTrue(fileManager.fileExists(atPath: skillPath), "Skill .agents/skills/bss-engineering-discipline/SKILL.md must exist at \(skillPath)")
     }
+
+    func testSecretsProtectionPolicyAndGitignore() throws {
+        let fileManager = FileManager.default
+        let root = projectRootPath()
+        let skillPath = (root as NSString).appendingPathComponent(".agents/skills/bss-engineering-discipline/SKILL.md")
+        let gitignorePath = (root as NSString).appendingPathComponent(".gitignore")
+
+        // 1. Skill must define Zero Leakage / Secrets Protection policy
+        let skillContent = try String(contentsOfFile: skillPath, encoding: .utf8)
+        XCTAssertTrue(skillContent.contains("Strict Secrets & Credentials Protection"), "Skill must define secrets protection guardrail")
+        XCTAssertTrue(skillContent.contains("Zero Leakage Policy"), "Skill must enforce Zero Leakage Policy")
+
+        // 2. .gitignore must ignore credential files
+        let gitignoreContent = try String(contentsOfFile: gitignorePath, encoding: .utf8)
+        XCTAssertTrue(gitignoreContent.contains("*.env*"), ".gitignore must block .env files")
+        XCTAssertTrue(gitignoreContent.contains("*.p12"), ".gitignore must block .p12 certificates")
+        XCTAssertTrue(gitignoreContent.contains("*.key"), ".gitignore must block .key private keys")
+        XCTAssertTrue(gitignoreContent.contains("*.pem"), ".gitignore must block .pem certificates")
+    }
 }
