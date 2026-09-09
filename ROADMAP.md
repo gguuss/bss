@@ -42,11 +42,12 @@ This roadmap governs the iterative development of **Better Screen Shot**, ensuri
 - [x] Branded splash screen on launch with hotkey reference and version info
 - [x] Custom high-resolution macOS application icon ("Better Screen Shot" camera with optical bullseye lens)
 
-### 4. Production Packaging & Release (v1.0.0)
+### 4. Production Packaging & Release (v1.0.0 / v1.0.1)
 - [x] Standalone macOS `.app` bundle assembly (`Better Screen Shot.app`)
 - [x] Ad-Hoc code signing (`codesign --force --deep --sign - --options runtime`)
+- [x] Drag-to-Applications `.dmg` installer creation (`BetterScreenShot-v1.0.1.dmg`)
 - [x] Comprehensive documentation in `README.md`
-- [x] Git repository tagged with `v1.0.0` and linked to `https://github.com/gguuss/bss`
+- [x] Git repository tagged with releases and linked to `https://github.com/gguuss/bss`
 
 ---
 

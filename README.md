@@ -98,6 +98,16 @@ bss/
 
 ---
 
+## Installation & Getting Started
+
+### Download DMG Installer (Recommended)
+1. Download the latest **[BetterScreenShot-v1.0.0.dmg](https://github.com/gguuss/bss/releases/download/v1.0.0/BetterScreenShot-v1.0.0.dmg)** from the [Releases page](https://github.com/gguuss/bss/releases).
+2. Open the disk image.
+3. Drag **Better Screen Shot.app** into the **Applications** folder shortcut.
+4. Launch the app from Applications or Spotlight.
+
+---
+
 ## First Launch & macOS Gatekeeper Notice
 
 When downloading pre-compiled apps directly from GitHub instead of the Mac App Store, macOS Gatekeeper attaches a quarantine attribute and may display:
@@ -107,9 +117,9 @@ This occurs because the application is ad-hoc signed rather than signed with an 
 
 ### How to Open on macOS (Choose Either Method):
 
-#### Option A: Finder (Recommended for Friends)
-1. In **Finder**, locate `Better Screen Shot.app` (usually in `~/Downloads` or Applications).
-2. **Right-click** (or **Control-click**) the app icon and select **Open**.
+#### Option A: Finder (Recommended)
+1. In **Finder**, go to your **Applications** folder.
+2. **Right-click** (or **Control-click**) `Better Screen Shot.app` and select **Open**.
 3. A dialog appears with an **"Open"** button — click **Open**.
 4. You only need to do this **once**. After the first open, macOS remembers your approval and the app opens normally.
 
