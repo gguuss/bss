@@ -116,7 +116,9 @@ public final class StatusBarController: NSObject, NSMenuDelegate, @unchecked Sen
     }
 
     @objc public func captureScreenAction() {
-        CaptureEngine.shared.captureDisplayToClipboard()
+        Task { @MainActor in
+            await CaptureEngine.shared.captureDisplayToClipboard()
+        }
     }
 
     @objc public func showFirstRunWizard() {

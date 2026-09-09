@@ -4,25 +4,27 @@ import AppKit
 
 @MainActor
 final class ClipboardManagerTests: XCTestCase {
-    func testCopyToClipboardWithNSImage() {
+    func testCopyToClipboardWithNSImageUsingIsolatedPasteboard() {
+        let testPasteboard = NSPasteboard.withUniqueName()
+
         let size = NSSize(width: 100, height: 100)
         let image = NSImage(size: size)
         image.lockFocus()
-        NSColor.systemRed.setFill()
+        NSColor.systemGreen.setFill()
         NSRect(origin: .zero, size: size).fill()
         image.unlockFocus()
 
-        let success = ClipboardManager.shared.copyToClipboard(image: image, playSound: false)
-        XCTAssertTrue(success, "Should successfully copy image to pasteboard")
+        let success = ClipboardManager.shared.copyToClipboard(image: image, to: testPasteboard, playSound: false)
+        XCTAssertTrue(success, "Should successfully copy image to isolated test pasteboard")
 
-        let pasteboard = NSPasteboard.general
-        let types = pasteboard.types ?? []
-
+        let types = testPasteboard.types ?? []
         XCTAssertTrue(types.contains(.png) || types.contains(.tiff), "Pasteboard should contain PNG or TIFF representation")
-        XCTAssertTrue(ClipboardManager.shared.hasImageInClipboard, "hasImageInClipboard should report true")
+        XCTAssertTrue(ClipboardManager.shared.hasImageInClipboard(in: testPasteboard), "hasImageInClipboard should report true for isolated pasteboard")
     }
 
-    func testCopyToClipboardWithCGImage() {
+    func testCopyToClipboardWithCGImageUsingIsolatedPasteboard() {
+        let testPasteboard = NSPasteboard.withUniqueName()
+
         let colorSpace = CGColorSpaceCreateDeviceRGB()
         let bitmapInfo = CGBitmapInfo(rawValue: CGImageAlphaInfo.premultipliedLast.rawValue)
         guard let context = CGContext(
@@ -46,8 +48,8 @@ final class ClipboardManagerTests: XCTestCase {
             return
         }
 
-        let success = ClipboardManager.shared.copyToClipboard(cgImage: cgImage, playSound: false)
-        XCTAssertTrue(success, "Should successfully copy CGImage to pasteboard")
-        XCTAssertTrue(ClipboardManager.shared.hasImageInClipboard)
+        let success = ClipboardManager.shared.copyToClipboard(cgImage: cgImage, to: testPasteboard, playSound: false)
+        XCTAssertTrue(success, "Should successfully copy CGImage to isolated test pasteboard")
+        XCTAssertTrue(ClipboardManager.shared.hasImageInClipboard(in: testPasteboard))
     }
 }

@@ -7,10 +7,9 @@ public final class ClipboardManager: @unchecked Sendable {
 
     public init() {}
 
-    /// Copies an NSImage to the system pasteboard as both TIFF and PNG representations.
+    /// Copies an NSImage to the specified pasteboard (defaults to .general) as both TIFF and PNG representations.
     @discardableResult
-    public func copyToClipboard(image: NSImage, playSound: Bool = true) -> Bool {
-        let pasteboard = NSPasteboard.general
+    public func copyToClipboard(image: NSImage, to pasteboard: NSPasteboard = .general, playSound: Bool = true) -> Bool {
         pasteboard.clearContents()
 
         var didWrite = false
@@ -34,19 +33,19 @@ public final class ClipboardManager: @unchecked Sendable {
             didWrite = pasteboard.writeObjects([image])
         }
 
-        if didWrite && playSound {
+        if didWrite && playSound && pasteboard == .general {
             playCaptureSound()
         }
 
         return didWrite
     }
 
-    /// Copies a CGImage to the clipboard
+    /// Copies a CGImage to the specified pasteboard (defaults to .general)
     @discardableResult
-    public func copyToClipboard(cgImage: CGImage, playSound: Bool = true) -> Bool {
+    public func copyToClipboard(cgImage: CGImage, to pasteboard: NSPasteboard = .general, playSound: Bool = true) -> Bool {
         let size = NSSize(width: cgImage.width, height: cgImage.height)
         let nsImage = NSImage(cgImage: cgImage, size: size)
-        return copyToClipboard(image: nsImage, playSound: playSound)
+        return copyToClipboard(image: nsImage, to: pasteboard, playSound: playSound)
     }
 
     /// Plays the standard macOS screen capture shutter sound
@@ -60,12 +59,16 @@ public final class ClipboardManager: @unchecked Sendable {
         }
     }
 
-    /// Checks if the general pasteboard contains image data
-    public var hasImageInClipboard: Bool {
-        let pasteboard = NSPasteboard.general
+    /// Checks if the specified pasteboard contains image data
+    public func hasImageInClipboard(in pasteboard: NSPasteboard = .general) -> Bool {
         return pasteboard.canReadItem(withDataConformingToTypes: [
             NSPasteboard.PasteboardType.png.rawValue,
             NSPasteboard.PasteboardType.tiff.rawValue
         ])
+    }
+
+    /// Convenience getter checking the general pasteboard
+    public var hasImageInClipboard: Bool {
+        return hasImageInClipboard(in: .general)
     }
 }

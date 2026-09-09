@@ -57,3 +57,11 @@ This skill ensures that Better Screen Shot (BSS) is built with professional soft
   - If the application ever requires authentication or encryption keys in the future (e.g., encrypted local media vault), utilize the **macOS Keychain Services API** (`SecItemAdd`, `SecItemCopyMatching`) or secure enclave; never hardcode keys in source code or plists.
 - **Incident Response**:
   - If a secret is ever accidentally committed, treat it as immediately compromised: rotate/revoke the secret at its provider immediately, and rewrite git history using tools like `git-filter-repo` before syncing.
+
+### 7. Bug Regression Guardrail (Mandatory Regression Tests)
+- **Every discovered or reported bug MUST have a dedicated automated regression test** written to reproduce and guard against future regressions.
+- The regression test must be added to the test suite and run automatically in `swift test` and `xcodebuild test`.
+- Specific regression rules:
+  - **Clipboard Isolation**: Automated tests must NEVER pollute or overwrite the user's live system pasteboard (`NSPasteboard.general`) with dummy or test images. Tests must use isolated pasteboards.
+  - **Capture Integrity & Sandboxing**: Screen and window captures must utilize modern `ScreenCaptureKit` (`SCShareableContent` and `SCScreenshotManager`) so that targeted window pixels are captured faithfully, preventing desktop-only wallpaper fallbacks in App Sandbox.
+  - **Overlay Separation**: Transient UI overlays (such as the bullseye red tracking border) must be hidden and never appear in the captured image.

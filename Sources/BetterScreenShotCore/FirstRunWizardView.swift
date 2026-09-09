@@ -109,11 +109,13 @@ public struct FirstRunWizardView: View {
             // Test Capture Action
             VStack(spacing: 8) {
                 Button(action: {
-                    let success = CaptureEngine.shared.captureDisplayToClipboard()
-                    if success {
-                        testSuccessMessage = "Screenshot copied to clipboard! Try pressing ⌘V in any chat."
-                    } else {
-                        testSuccessMessage = "Capture failed. Please check permissions in System Settings."
+                    Task { @MainActor in
+                        let success = await CaptureEngine.shared.captureDisplayToClipboard()
+                        if success {
+                            testSuccessMessage = "Screenshot copied to clipboard! Try pressing ⌘V in any chat."
+                        } else {
+                            testSuccessMessage = "Capture failed. Please check permissions in System Settings."
+                        }
                     }
                 }) {
                     Label("Test Screenshot (Copy to Clipboard)", systemImage: "camera.fill")

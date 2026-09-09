@@ -14,6 +14,7 @@
 		50F27193D384974200E7D95D /* FirstRunWizardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18E09B3423AAE8519E541497 /* FirstRunWizardView.swift */; };
 		56309FD535B081CBBF44BAF5 /* HighlightOverlayWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66640046A769AC4ED634B28 /* HighlightOverlayWindow.swift */; };
 		5E94125F08509CBF4F756681 /* ClipboardManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC9E8E08E1CE29C47B76BA40 /* ClipboardManagerTests.swift */; };
+		6778FF89BED8A27CF0539019 /* CaptureRegressionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8E8512D028F8E965C74EB6E /* CaptureRegressionTests.swift */; };
 		6C11002FFFE212BA4405D6A4 /* CaptureEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF3B83E68F881661165A3D2E /* CaptureEngine.swift */; };
 		6DB44DD1B5794A504571C2A6 /* WindowPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F7F0982DDE7486E6B671D68 /* WindowPicker.swift */; };
 		6FC2FDA175BB0A8C567C18AD /* BetterScreenShotCore.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 7BBC5C7384F304C1F0CD8AB6 /* BetterScreenShotCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -93,6 +94,7 @@
 		BF3B83E68F881661165A3D2E /* CaptureEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureEngine.swift; sourceTree = "<group>"; };
 		CBA3A47DE8762CEF8C2F4A85 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		CC2F299EF754CF5997408F63 /* XcodeGenBlueprintTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XcodeGenBlueprintTests.swift; sourceTree = "<group>"; };
+		D8E8512D028F8E965C74EB6E /* CaptureRegressionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureRegressionTests.swift; sourceTree = "<group>"; };
 		DD5D3127F0E8BB7754BA1F72 /* BetterScreenShot.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = BetterScreenShot.entitlements; sourceTree = "<group>"; };
 		E372737145BA0091B7A0536E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		EA764F37D21482403E1F2DB7 /* HotkeyManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HotkeyManager.swift; sourceTree = "<group>"; };
@@ -184,6 +186,7 @@
 		DC2D019CC76E4D81EA2F250D /* BetterScreenShotTests */ = {
 			isa = PBXGroup;
 			children = (
+				D8E8512D028F8E965C74EB6E /* CaptureRegressionTests.swift */,
 				BC9E8E08E1CE29C47B76BA40 /* ClipboardManagerTests.swift */,
 				B8F877E9FF67EFA08A442055 /* HotkeyManagerTests.swift */,
 				5AB070F7B0DF83AABFF1F012 /* PermissionsAndRoadmapTests.swift */,
@@ -342,6 +345,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6778FF89BED8A27CF0539019 /* CaptureRegressionTests.swift in Sources */,
 				5E94125F08509CBF4F756681 /* ClipboardManagerTests.swift in Sources */,
 				D759069405D2A9D59700300D /* HotkeyManagerTests.swift in Sources */,
 				C7808822EE4C83CE764A7718 /* PermissionsAndRoadmapTests.swift in Sources */,

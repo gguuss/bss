@@ -153,22 +153,26 @@ public final class WindowPicker: @unchecked Sendable {
     /// Concludes the session, captures the target window, and copies it to clipboard
     public func finishBullseyeSession() {
         guard isPicking else { return }
+        HighlightOverlayWindow.shared.dismiss()
+        let targetWindow = currentHighlightedWindow
         tearDownTracking()
 
-        guard let targetWindow = currentHighlightedWindow else {
+        guard let selectedWindow = targetWindow else {
             completionHandler?(nil)
             completionHandler = nil
             return
         }
 
-        // Small delay to let highlight panel fade out before taking screenshot
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) { [weak self] in
-            let image = CaptureEngine.shared.captureWindow(windowID: targetWindow.windowID)
-            if let image = image {
-                ClipboardManager.shared.copyToClipboard(cgImage: image)
+        // Delay to allow macOS window server to completely remove the highlight overlay from the frame buffer
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.12) { [weak self] in
+            Task { @MainActor in
+                let image = await CaptureEngine.shared.captureWindow(windowID: selectedWindow.windowID)
+                if let image = image {
+                    ClipboardManager.shared.copyToClipboard(cgImage: image)
+                }
+                self?.completionHandler?(image)
+                self?.completionHandler = nil
             }
-            self?.completionHandler?(image)
-            self?.completionHandler = nil
         }
     }
 

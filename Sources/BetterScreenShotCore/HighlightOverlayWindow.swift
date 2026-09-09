@@ -89,8 +89,12 @@ public final class HighlightOverlayWindow: NSPanel, @unchecked Sendable {
         }
     }
 
-    /// Hides the highlight border
+    /// Hides the highlight border immediately and flushes the display transaction
     public func dismiss() {
+        CATransaction.begin()
+        CATransaction.setDisableActions(true)
         self.orderOut(nil)
+        CATransaction.commit()
+        CATransaction.flush()
     }
 }
