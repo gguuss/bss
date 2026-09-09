@@ -29,6 +29,7 @@ final class XcodeGenBlueprintTests: XCTestCase {
 
         XCTAssertTrue(content.contains("bundleIdPrefix: And-Friends"), "Blueprint must specify bundleIdPrefix as And-Friends")
         XCTAssertTrue(content.contains("And-Friends.Better-Screen-Shot"), "Blueprint must specify And-Friends.Better-Screen-Shot")
+        XCTAssertTrue(content.contains("Better Screen Shot - PASTE capture"), "Blueprint must specify unique App Store title Better Screen Shot - PASTE capture")
 
         let infoPlistPath = (root as NSString).appendingPathComponent("Sources/BetterScreenShot/Info.plist")
         guard FileManager.default.fileExists(atPath: infoPlistPath),

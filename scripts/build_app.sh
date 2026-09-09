@@ -5,7 +5,8 @@ echo "===================================================="
 echo "  Building & Packaging Better Screen Shot (v1.0.0)  "
 echo "===================================================="
 
-APP_NAME="Better Screen Shot"
+APP_NAME="Better Screen Shot - PASTE capture"
+DISPLAY_NAME="Better Screen Shot"
 BUNDLE_ID="And-Friends.Better-Screen-Shot"
 VERSION="1.0.0"
 BUILD_NUMBER="1"
@@ -55,7 +56,7 @@ cat <<EOF > "$CONTENTS_DIR/Info.plist"
     <key>CFBundleName</key>
     <string>$APP_NAME</string>
     <key>CFBundleDisplayName</key>
-    <string>$APP_NAME</string>
+    <string>$DISPLAY_NAME</string>
     <key>CFBundlePackageType</key>
     <string>APPL</string>
     <key>CFBundleShortVersionString</key>

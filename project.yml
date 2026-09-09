@@ -51,7 +51,7 @@ targets:
         embed: true
     settings:
       base:
-        PRODUCT_NAME: "Better Screen Shot"
+        PRODUCT_NAME: "Better Screen Shot - PASTE capture"
         PRODUCT_BUNDLE_IDENTIFIER: And-Friends.Better-Screen-Shot
         INFOPLIST_FILE: Sources/BetterScreenShot/Info.plist
         GENERATE_INFOPLIST_FILE: NO

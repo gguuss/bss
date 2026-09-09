@@ -486,7 +486,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
 				MARKETING_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "And-Friends.Better-Screen-Shot";
-				PRODUCT_NAME = "Better Screen Shot";
+				PRODUCT_NAME = "Better Screen Shot - PASTE capture";
 				SDKROOT = macosx;
 			};
 			name = Debug;
@@ -552,7 +552,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
 				MARKETING_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "And-Friends.Better-Screen-Shot";
-				PRODUCT_NAME = "Better Screen Shot";
+				PRODUCT_NAME = "Better Screen Shot - PASTE capture";
 				SDKROOT = macosx;
 			};
 			name = Release;
